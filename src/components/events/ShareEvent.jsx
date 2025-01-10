@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 
 export default function ShareEvent({ event, eventUrl }) {
   const [copied, setCopied] = useState(false);
+  const iconSize = 32;
+  const iconRound = true;
 
   const shareText = `Join me at ${event.title}! ${event.description}`;
 
@@ -28,19 +30,19 @@ export default function ShareEvent({ event, eventUrl }) {
 
       <div className="share-buttons">
         <FacebookShareButton url={eventUrl} quote={shareText}>
-          <FacebookIcon size={32} round />
+          <FacebookIcon size={iconSize} round={iconRound} />
         </FacebookShareButton>
 
         <TwitterShareButton url={eventUrl} title={shareText}>
-          <TwitterIcon size={32} round />
+          <TwitterIcon size={iconSize} round={iconRound} />
         </TwitterShareButton>
 
         <WhatsappShareButton url={eventUrl} title={shareText}>
-          <WhatsappIcon size={32} round />
+          <WhatsappIcon size={iconSize} round={iconRound} />
         </WhatsappShareButton>
 
         <TelegramShareButton url={eventUrl} title={shareText}>
-          <TelegramIcon size={32} round />
+          <TelegramIcon size={iconSize} round={iconRound} />
         </TelegramShareButton>
       </div>
 

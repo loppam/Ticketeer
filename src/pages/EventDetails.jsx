@@ -8,6 +8,7 @@ import CheckIn from "../components/events/CheckIn";
 import TicketAvailability from "../components/events/TicketAvailability";
 import ShareEvent from "../components/events/ShareEvent";
 import MetaTags from "../components/common/MetaTags";
+import ImageSlider from "../components/events/ImageSlider";
 
 export default function EventDetails() {
   const { eventId } = useParams();
@@ -48,6 +49,9 @@ export default function EventDetails() {
         <>
           <MetaTags event={event} eventUrl={eventUrl} />
           <div className="event-content">
+            {event.images && event.images.length > 0 && (
+              <ImageSlider images={event.images} />
+            )}
             <div className="event-header">
               <h1 className="event-title">{event.title}</h1>
               <TicketAvailability eventId={eventId} />

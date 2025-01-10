@@ -13,8 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { validateEventCode } from "../utils/ticketUtils";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./firebase";
+import { uploadToS3 } from "./s3Service";
 
 const EVENTS_COLLECTION = "events";
 
@@ -27,12 +26,8 @@ export async function createEvent(eventData, userId) {
   const imageUrls = [];
   if (eventData.images?.length) {
     for (const image of eventData.images) {
-      const imageRef = ref(
-        storage,
-        `events/${userId}/${Date.now()}-${image.name}`
-      );
-      await uploadBytes(imageRef, image);
-      const url = await getDownloadURL(imageRef);
+      const path = `events/${userId}/${Date.now()}-${image.name}`;
+      const url = await uploadToS3(image, path);
       imageUrls.push(url);
     }
   }
