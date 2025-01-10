@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /events/{eventId} {
+      allow read: if true;  // Anyone can read events
+      
+      // Allow creation only by authenticated users
+      allow create: if request.auth != null;
+      
+      // Allow updates for ticket quantities without authentication
+      allow update: if 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ticketTypes']) ||
+        (request.auth != null && resource.data.creatorId == request.auth.uid);
+      
+      // Only creator can delete
+      allow delete: if request.auth != null && resource.data.creatorId == request.auth.uid;
+    }
+    
+    match /registrations/{registrationId} {
+      // Anyone can read their own registration using the registration ID
+      allow read: if true;
+      
+      // Validate registration data structure
+      allow create: if 
+        request.resource.data.keys().hasAll([
+          'name', 'email', 'phone', 'eventId', 'ticketCode',
+          'selectedTicketType', 'ticketPrice', 'quantity', 
+          'status', 'createdAt', 'id'
+        ]) &&
+        request.resource.data.status == 'pending';
+      
+      // Only allow updates for payment processing and status changes
+      allow update: if 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt', 'completedAt']);
+    }
+  }
+} 
