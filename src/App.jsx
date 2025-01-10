@@ -10,6 +10,7 @@ import PaymentCallback from "./pages/PaymentCallback";
 import RegistrationSuccess from "./pages/RegistrationSuccess";
 import PropTypes from "prop-types";
 import "./App.css";
+import Home from "./pages/Home";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -40,7 +41,7 @@ function App() {
     <BrowserRouter>
       <Navigation />
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Home />} />
         <Route
           path="/login"
           element={

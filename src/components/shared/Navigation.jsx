@@ -1,9 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
 
 export default function Navigation() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isHomePage = location.pathname === "/";
+  const isRegistrationPage =
+    location.pathname.includes("/events/") &&
+    location.pathname.includes("/register") &&
+    location.pathname.includes("/callback") &&
+    location.pathname.includes("/success");
+
+  // Check if we need to show navigation links
+  const showNavLinks = user || (isHomePage && !isRegistrationPage);
 
   const handleSignOut = async () => {
     try {
@@ -14,15 +27,25 @@ export default function Navigation() {
     }
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <nav className="main-nav">
       <div className="nav-container">
         <div className="nav-content">
           <Link to="/" className="nav-brand">
-            Heads and Tails
+            Ticketeer
           </Link>
 
-          <div className="nav-links">
+          {showNavLinks && (
+            <button className="menu-button" onClick={toggleMenu}>
+              ☰
+            </button>
+          )}
+
+          <div className={`nav-links ${!isMenuOpen ? "closed" : ""}`}>
             {user ? (
               <>
                 <Link to="/dashboard" className="nav-link">
@@ -35,7 +58,7 @@ export default function Navigation() {
                   Sign Out
                 </button>
               </>
-            ) : (
+            ) : isHomePage && !isRegistrationPage ? (
               <>
                 <Link to="/login" className="nav-link">
                   Login
@@ -44,7 +67,7 @@ export default function Navigation() {
                   Register
                 </Link>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
